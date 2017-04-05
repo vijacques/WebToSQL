@@ -8,7 +8,7 @@ module Parser =
     let HtmlToModel (httpResponse) =
         let html = HtmlDocument.Parse httpResponse
 
-        // HTML contents
+        // HTML
         let id = (html.CssSelect "input#hdnImovelID").Head.AttributeValue "value" |> int
         let bairro, cidade =
             try
@@ -33,4 +33,4 @@ module Parser =
         ap.Fotos <- fotos
         ap.Valor <- valor
         
-        ap
+        ap, id
