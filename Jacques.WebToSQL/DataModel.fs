@@ -13,7 +13,7 @@ module DataModel =
         member val AreaUtil = 0 with get,set
         member val AreaTotal = 0 with get,set
         member val Vagas = 0 with get,set
-        member val Condominio = 0 with get,set
+        member val Condominio = float 0 with get,set
         member val IPTU = float 0 with get,set
         member val Bairro = "" with get,set
         member val Rua = "" with get,set
@@ -24,6 +24,12 @@ module DataModel =
         member val CaracteristicasImovel = "" with get,set
         member val CaracteristicasAreasComuns = "" with get,set
         member val Andares = 0 with get,set
+        
+        member val Area = 0 with get,set
+        member val CEP = "" with get,set
+        member val Endereco = "" with get,set
+        member val Estado = "" with get,set
+        member val DataAtualizacaoHumana = "" with get,set
 
     type EntityContext() =
         inherit DbContext()

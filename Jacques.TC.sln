@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.10
+VisualStudioVersion = 15.0.26403.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Jacques.WebToSQL", "Jacques.WebToSQL\Jacques.WebToSQL.fsproj", "{C1450804-5DEB-48B7-B69F-93ED76441B10}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jacques.DataModel", "Jacques.DataModel\Jacques.DataModel.csproj", "{9FA94797-0174-4831-8924-53B8435A5A96}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{C1450804-5DEB-48B7-B69F-93ED76441B10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1450804-5DEB-48B7-B69F-93ED76441B10}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1450804-5DEB-48B7-B69F-93ED76441B10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FA94797-0174-4831-8924-53B8435A5A96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FA94797-0174-4831-8924-53B8435A5A96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FA94797-0174-4831-8924-53B8435A5A96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FA94797-0174-4831-8924-53B8435A5A96}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

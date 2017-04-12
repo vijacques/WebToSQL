@@ -1,8 +1,9 @@
-﻿open FSharp.Data
+﻿open Jacques.DataModel
 open Jacques.WebToSql.DataModel
 open Jacques.WebToSql.Parser
+open Newtonsoft.Json
 open System
-open System.Net
+open System.IO
 
 [<EntryPoint>]
 let main argv = 
@@ -10,28 +11,39 @@ let main argv =
     db.Database.EnsureDeleted() |> ignore
     db.Database.EnsureCreated() |> ignore
 
-    let mutable counter = 0
+    let path = "C:/Users/Vinicius Jacques/Source/phantomjs-2.1.1-windows/bin/"
 
-    let doWork url =
-        async {
-            let! resp = Http.AsyncRequestString(url, headers = [("user-agent","teste")])
-            let ap, id = HtmlToModel resp
-            db.Apartamentos.Add(ap) |> ignore
-            counter <- counter + 1
-            printfn "\t%i ID:%i" counter id
-        }
+    for file in Directory.EnumerateFiles(path, "*.txt") do
+        try
+            let content = JsonConvert.DeserializeObject<RootObject>(File.ReadAllText file)
 
-    for i in 1..2 do
-        let searchUrl = """https://www.zapimoveis.com.br/aluguel/apartamentos/rs+porto-alegre/#{"possuiendereco":"True","parametrosautosuggest":[{"Bairro":"","Zona":"","Cidade":"PORTO ALEGRE","Agrupamento":"","Estado":"RS"}],"pagina":""" + "\"" + string i + "\"" + ""","paginaOrigem":"Home","formato":"Lista"}"""
-        printfn "%i %s" i searchUrl
+            for resultado in content.Resultado.Resultado do
+                let ap = new Apartamento()
+                ap.ID <- resultado.CodigoOfertaZAP
+                // area total? area util?
+                ap.Area <- resultado.Area
+                ap.Rua <- resultado.Endereco
+                ap.Bairro <- resultado.Bairro
+                ap.Cidade <- resultado.Cidade
+                ap.CEP <- string resultado.CEP
+                ap.Endereco <- resultado.Endereco
+                ap.Estado <- resultado.Estado
+                ap.Fotos <- resultado.Fotos.Count
+                ap.Descricao <- resultado.Observacao
+                ap.Condominio <- float (resultado.PrecoCondominio.Replace("R$ ", "").Replace(".","").Replace(",","."))
+                ap.Quartos <- resultado.QuantidadeQuartos
+                ap.Suites <- resultado.QuantidadeSuites
+                ap.Vagas <- resultado.QuantidadeVagas
+                ap.Valor <- float (resultado.Valor.Replace("R$ ", "").Replace(".","").Replace(",","."))
+                ap.IPTU <- float (resultado.ValorIPTU.Replace("R$ ", "").Replace(".","").Replace(",","."))
+                ap.DataExtracao <- Directory.GetLastWriteTime file
+                ap.DataAtualizacaoHumana <- resultado.DataAtualizacaoHumanizada
+                // ano construcao? CaracteristicasImovel? CaracteristicasAreasComuns? Andares?
 
-        let content = Http.RequestString(searchUrl, headers = [("user-agent","teste")])
-        let html = HtmlDocument.Parse content
-        let urlList = [for i in 0..19 do yield ((html.CssSelect ("a#miniFicha" + string i) |> List.head).AttributeValue "href").Replace("https", "http")]
+                db.Apartamentos.Add ap |> ignore
+            printfn "Finished file: %s" file
+            db.SaveChanges() |> ignore
+        with exn -> printfn "%A" exn
 
-        urlList |> Seq.map doWork |> Async.Parallel |> Async.RunSynchronously |> ignore
-
-        db.SaveChanges() |> ignore
-    
     Console.ReadLine() |> ignore
     0
